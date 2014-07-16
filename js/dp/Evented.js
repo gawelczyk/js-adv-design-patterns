@@ -7,13 +7,15 @@
 var Evented = (function () {
 
     function on(eventName, listenerFn) {
+        if (!this.events)
+            this.events = {};
         if (!this.events[eventName])
             this.events[eventName] = [];
         this.events[eventName].push(listenerFn);
     }
 
     function trigger(eventName, args) {
-        if (this.events[eventName]) {
+        if (this.events && this.events[eventName]) {
             for (var i = 0; i < this.events[eventName].length; i++) {
                 this.events[eventName][i].apply(this, args);
             }
@@ -21,17 +23,17 @@ var Evented = (function () {
     }
 
     function off(eventName) {
-        if (this.events[eventName])
+        if (this.events && this.events[eventName])
             delete this.events[eventName]
     }
 
     return {
         on: on,
         trigger: trigger,
-        off: off,
-        afterMixed: function () {
-            this.events = {};
-        }
+        off: off
+//        afterMixed: function () {
+//            this.events = {};
+//        }
     }
 
 })();

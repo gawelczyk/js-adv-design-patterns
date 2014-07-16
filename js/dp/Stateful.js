@@ -4,7 +4,7 @@
 
 //stateful pattern
 var Stateful = (function (mixin, Evented) {
-
+    var WATCHEDDATA = 'watchedData';
     var statefull = {
         watch: function (name, fn) {
             this.on(name, fn);
@@ -13,18 +13,21 @@ var Stateful = (function (mixin, Evented) {
             this.on('watchall', fn);
         },
         set: function (property, value) {
-            var old = this[property]
-            this[property] = value;
+            var old = this[property];
+            if (!this[WATCHEDDATA])
+                this[WATCHEDDATA] = {};
+            this[WATCHEDDATA][property] = value;
             this.trigger(property, [old, value]);
             this.trigger('watchall', [property, old, value]);
         },
         get: function (property) {
-            return this[property];
-        },
-        afterMixed:function(){
-            //reset events hash, if not we share it among all object after mixin
-            this.events = {};
+            if (!this[WATCHEDDATA])
+                return this[WATCHEDDATA][property];
         }
+//        afterMixed:function(){
+//            //reset events hash, if not we share it among all object after mixin
+//            this.events = {};
+//        }
     }
 
     mixin(statefull, Evented);
