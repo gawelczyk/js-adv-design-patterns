@@ -3,7 +3,7 @@
 // + trigger(eventName, args)
 // + off(eventName)
 
-
+//observer pattern
 var Evented = (function () {
 
     function on(eventName, listenerFn) {
