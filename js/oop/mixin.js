@@ -1,10 +1,14 @@
 // Implement mixin(destination, source) function.
 function mixin(destination, source) {
+    var afterMixed = 'afterMixed';
 
     for (var prop in source) {
-        destination[prop] = source[prop];
+        if (prop != afterMixed)
+            destination[prop] = source[prop];
     }
-
+    if (source.hasOwnProperty(afterMixed)) {
+        source[afterMixed].apply(destination);
+    }
 }
 
 var Encryptable = (function () {
@@ -53,6 +57,11 @@ function mixinInstanceExampleUsage(mixin) {
     var Teacher = {
         teach: function () {
             console.log("teach");
+        },
+        afterMixed: function () {
+            console.log('afterMixed called');
+            if (!this.skills)
+                this.skills = [];
         }
     };
 
@@ -67,7 +76,9 @@ function mixinInstanceExampleUsage(mixin) {
 
     bob.teach();
     bob.dance(); // logs "dance"
+    console.log(bob);
 }
+
 console.log('mixinInstanceExampleUsage test');
 mixinInstanceExampleUsage(mixin);
 console.log('//mixinInstanceExampleUsage test');
